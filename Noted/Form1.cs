@@ -23,6 +23,9 @@ namespace Noted
         {
             InitializeComponent();
             LoadNotes();
+            listViewNotes.View = View.Details; // Устанавливаем режим отображения в виде таблицы
+            listViewNotes.Columns.Add("Ваши заметки ", -2, HorizontalAlignment.Left); // Добавляем столбец "Title" с автоматической шириной
+            listViewNotes.SelectedIndexChanged += ListViewNotes_SelectedIndexChanged;
         }
         private void LoadNotes()
         {
@@ -30,7 +33,7 @@ namespace Noted
 
             foreach (var note in notes)
             {
-                ListViewItem item = new ListViewItem(new string[] { note.NoteId.ToString(), note.Title, note.Content, note.CreatedAt.ToString() });
+                ListViewItem item = new ListViewItem(new string[] { note.Title });
                 listViewNotes.Items.Add(item);
             }
         }
@@ -42,8 +45,11 @@ namespace Noted
                 int selectedNoteId = Convert.ToInt32(listViewNotes.SelectedItems[0].Text);
                 Note selectedNote = noteRepository.GetNoteById(selectedNoteId);
 
-                // Отобразите выбранную заметку на форме
-                // Например, в текстовых полях или других элементах управления
+                // Открываем ChildForm с выбранной заметкой
+                using (ChildForm childForm = new ChildForm(selectedNoteId, selectedNote.Title, Icon, selectedNote))
+                {
+                    childForm.ShowDialog();
+                }
             }
         }
 
@@ -57,23 +63,20 @@ namespace Noted
 
         private void button2_Click(object sender, EventArgs e)
         {
-            /*this.Hide();
-            Note note = new Note();
-            note.Show();*/
-
             string title = Promt.ShowDialog("Введите заголовок:", "Заголовок", "По умолчанию");
 
             Icon icon = new Icon("D:\\Code D\\Visual Studio\\Noted\\Noted\\note.ico");
+            Note newNote = new Note
+            {
+                NoteId = nextWindowId,
+                Title = title,
+                // Дополните объект Note по вашему усмотрению
+            };
 
-            var newWindow = new ChildForm(nextWindowId,title, icon );
+            var newWindow = new ChildForm(nextWindowId, title, icon, newNote);
             newWindow.TitleChanged += ChildForm_TitleChanged;
             newWindow.Show();
             nextWindowId++;
-
-
-           
-
-            
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -105,12 +108,12 @@ namespace Noted
                 // Если ChildForm уже создан, просто обновите его содержимое
                 if (Application.OpenForms["ChildForm"] is ChildForm childForm)
                 {
-                    childForm.UpdateContent(selectedNote);
+                    childForm.UpdateContent();
                 }
                 else
                 {
                     // Иначе создайте новый ChildForm
-                    using (ChildForm newChildForm = new ChildForm(selectedNote))
+                    using (ChildForm newChildForm = new ChildForm(selectedNoteId, selectedNote.Title, Icon, selectedNote))
                     {
                         newChildForm.Show();
                     }
