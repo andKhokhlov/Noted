@@ -35,6 +35,17 @@ namespace Noted
             {
                 ListViewItem item = new ListViewItem(new string[] { note.Title });
                 listViewNotes.Items.Add(item);
+                UpdateListView();
+            }
+        }
+        private void UpdateListView()
+        {
+            List<Note> notes = noteRepository.GetNotes();
+            listViewNotes.Items.Clear();
+            foreach (var note in notes)
+            {
+                ListViewItem item = new ListViewItem(new string[] { note.Title });
+                listViewNotes.Items.Add(item);
             }
         }
 
@@ -119,6 +130,11 @@ namespace Noted
                     }
                 }
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            LoadNotes();
         }
     }
 

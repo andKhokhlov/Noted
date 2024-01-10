@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Noted.Form1;
 
 namespace Noted
 {
@@ -18,6 +19,7 @@ namespace Noted
 
         public int WindowId { get; }
         public event EventHandler TitleChanged;
+        public event EventHandler NoteUpdated;
 
         public ChildForm(int windowId, string title,Icon icon, Note note)
         {
@@ -50,7 +52,13 @@ namespace Noted
             {
                 titleTextBox.Text = currentNote.Title;
                 contentTextBox.Text = currentNote.Content;
+                
             }
+        }
+
+        protected virtual void OnNoteUpdated(EventArgs e)
+        {
+            NoteUpdated?.Invoke(this, e);
         }
 
         private void InitializeNoteTextBox()
@@ -101,14 +109,20 @@ namespace Noted
             }
         }
 
+
+
         //private void SaveButton_Click(object sender, EventArgs e)
         //{
           //  SaveNoteToDatabase(WindowId, Text, noteTextBox.Text);
         //}
 
+
         private void button1_Click(object sender, EventArgs e)
         {
             SaveNoteToDatabase(WindowId, Text, noteTextBox.Text);
+            this.Hide();
+            OnNoteUpdated(EventArgs.Empty);
+            
         }
     }
 }

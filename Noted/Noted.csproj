@@ -162,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="note.ico" />
+    <None Include="Resources\refresh %281%29.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
