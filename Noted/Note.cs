@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Noted
 {
-    internal class Note
+     public class Note
     {
         public int NoteId { get; set; }
         public int WindowId { get; set; }
